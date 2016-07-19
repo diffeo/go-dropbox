@@ -59,6 +59,14 @@ func (c *Sharing) CreateSharedLink(in *CreateSharedLinkInput) (out *CreateShared
 	return
 }
 
+// ListSharedFileMembersInput request input.
+type ListSharedFileMembersInput struct {
+	File             string         `json:"file"`
+	Actions          []MemberAction `json:"actions"`
+	IncludeInherited bool           `json:"include_inherited"`
+	Limit            uint32         `json:"limit"`
+}
+
 // ListSharedFolderMembersInput request input.
 type ListSharedFolderMembersInput struct {
 	SharedFolderID string         `json:"shared_folder_id"`
@@ -66,12 +74,17 @@ type ListSharedFolderMembersInput struct {
 	Limit          uint64         `json:"limit"`
 }
 
-// ListSharedFolderMembersOutput enumerates shared folder user and group membership.
-type ListSharedFolderMembersOutput struct {
+// ListSharedMembersOutput enumerates shared file/folder user and group membership.
+type ListSharedMembersOutput struct {
 	Users    []UserMembershipInfo    `json:"users"`
 	Groups   []GroupMembershipInfo   `json:"groups"`
 	Invitees []InviteeMembershipInfo `json:"invitees"`
 	Cursor   string                  `json:"cursor"`
+}
+
+// ListSharedMembersContinueInput is the input for continuing listing file/folder members.
+type ListSharedMembersContinueInput struct {
+	Cursor string `json:"cursor"`
 }
 
 // UserMembershipInfo is information about a user member of the shared folder.
@@ -172,8 +185,32 @@ type InviteeInfo struct {
 	Email string `json:"email"`
 }
 
+// ListSharedFileMembers returns shared file membership by its file ID.
+func (c *Sharing) ListSharedFileMembers(in *ListSharedFileMembersInput) (out *ListSharedMembersOutput, err error) {
+	body, err := c.call("/sharing/list_file_members", in)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+
+	err = json.NewDecoder(body).Decode(&out)
+	return
+}
+
+// ListSharedFileMembersContinue returns shared file membership by its file ID.
+func (c *Sharing) ListSharedFileMembersContinue(in *ListSharedMembersContinueInput) (out *ListSharedMembersOutput, err error) {
+	body, err := c.call("/sharing/list_file_members/continue", in)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+
+	err = json.NewDecoder(body).Decode(&out)
+	return
+}
+
 // ListSharedFolderMembers returns shared folder membership by its folder ID.
-func (c *Sharing) ListSharedFolderMembers(in *ListSharedFolderMembersInput) (out *ListSharedFolderMembersOutput, err error) {
+func (c *Sharing) ListSharedFolderMembers(in *ListSharedFolderMembersInput) (out *ListSharedMembersOutput, err error) {
 	body, err := c.call("/sharing/list_folder_members", in)
 	if err != nil {
 		return
@@ -184,13 +221,8 @@ func (c *Sharing) ListSharedFolderMembers(in *ListSharedFolderMembersInput) (out
 	return
 }
 
-// ListSharedFolderMembersInputContinue is the input for continuing listing folder members.
-type ListSharedFolderMembersInputContinue struct {
-	Cursor string `json:"cursor"`
-}
-
 // ListSharedFolderMembersContinue returns shared folder membership by its folder ID.
-func (c *Sharing) ListSharedFolderMembersContinue(in *ListSharedFolderMembersInputContinue) (out *ListSharedFolderMembersOutput, err error) {
+func (c *Sharing) ListSharedFolderMembersContinue(in *ListSharedMembersContinueInput) (out *ListSharedMembersOutput, err error) {
 	body, err := c.call("/sharing/list_folder_members/continue", in)
 	if err != nil {
 		return
