@@ -49,7 +49,7 @@ func TestSharing_ListSharedFolder(t *testing.T) {
 		assert.Equal(t, 1, len(out.Users)+len(out.Groups)+len(out.Invitees), "there should be 1 item present")
 
 		for out.Cursor != "" {
-			out, err = c.Sharing.ListSharedFolderMembersContinue(&ListSharedFolderMembersInputContinue{
+			out, err = c.Sharing.ListSharedFolderMembersContinue(&ListSharedMembersContinueInput{
 				Cursor: out.Cursor,
 			})
 
@@ -57,4 +57,24 @@ func TestSharing_ListSharedFolder(t *testing.T) {
 			assert.Equal(t, 1, len(out.Users)+len(out.Groups)+len(out.Invitees), "there should be 1 item present")
 		}
 	}
+}
+
+func TestSharing_ListSharedFile(t *testing.T) {
+	c := client()
+	out, err := c.Sharing.ListSharedFileMembers(&ListSharedFileMembersInput{
+		File:             "/hello.txt",
+		IncludeInherited: true,
+		Limit:            1,
+	})
+
+	assert.NoError(t, err, "getting shared user list")
+	assert.NotEmpty(t, out.Users, "output should be non-empty")
+	assert.NotEmpty(t, out.Cursor, "cursor should be non-empty for complete test")
+
+	out, err = c.Sharing.ListSharedFileMembersContinue(&ListSharedMembersContinueInput{
+		Cursor: out.Cursor,
+	})
+
+	assert.NoError(t, err, "continuing shared user list")
+	assert.NotZero(t, len(out.Users)+len(out.Groups)+len(out.Invitees), "continuing list should be non-empty")
 }

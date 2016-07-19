@@ -46,6 +46,26 @@ func (c *Users) GetAccount(in *GetAccountInput) (out *GetAccountOutput, err erro
 	return
 }
 
+// GetAccountBatchInput request input. At most 300 ids may be listed.
+type GetAccountBatchInput struct {
+	AccountIDs []string `json:"account_ids"`
+}
+
+// GetAccountBatchOutput request output.
+type GetAccountBatchOutput []*GetAccountOutput
+
+// GetAccountBatch returns a list of information about users' accounts.
+func (c *Users) GetAccountBatch(in *GetAccountBatchInput) (out GetAccountBatchOutput, err error) {
+	body, err := c.call("/users/get_account_batch", in)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+
+	err = json.NewDecoder(body).Decode(&out)
+	return
+}
+
 // GetCurrentAccountOutput request output.
 type GetCurrentAccountOutput struct {
 	AccountID string `json:"account_id"`
