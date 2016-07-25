@@ -32,6 +32,10 @@ type GetAccountOutput struct {
 		FamiliarName string `json:"familiar_name"`
 		DisplayName  string `json:"display_name"`
 	} `json:"name"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+	Disabled      bool   `json:"disabled"`
+	IsTeammate    bool   `json:"is_teammate"`
 }
 
 // GetAccount returns information about a user's account.
