@@ -14,9 +14,9 @@ type Error struct {
 	Status     string
 	StatusCode int
 	Header     http.Header
-	Summary    string                 `json:"error_summary"`
-	Message    string                 `json:"user_message"` // optionally present
-	Err        map[string]interface{} `json:"error"`
+	Summary    string      `json:"error_summary"`
+	Message    string      `json:"user_message"` // optionally present
+	Err        interface{} `json:"error"`
 }
 
 // Error string.
@@ -26,13 +26,22 @@ func (e *Error) Error() string {
 
 // Tag returns the inner tag for the error
 func (e *Error) Tag() (tag, value string) {
-	var ok bool
-	tag, ok = e.Err[".tag"].(string)
+	payload, ok := e.Err.(map[string]interface{})
+	if !ok {
+		val, ok := e.Err.(string)
+		if ok {
+			return "", val
+		}
+
+		return
+	}
+
+	tag, ok = payload[".tag"].(string)
 	if !ok {
 		return
 	}
 
-	data, ok := e.Err[tag].(map[string]interface{})
+	data, ok := payload[tag].(map[string]interface{})
 	if !ok {
 		return
 	}
