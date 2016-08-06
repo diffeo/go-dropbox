@@ -1,6 +1,7 @@
 package dropbox
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -21,7 +22,10 @@ type Error struct {
 
 // Error string.
 func (e *Error) Error() string {
-	return e.Summary
+	if e.Summary != "" {
+		return e.Summary
+	}
+	return fmt.Sprintf("%d: %s", e.StatusCode, e.Status)
 }
 
 // Tag returns the inner tag for the error
