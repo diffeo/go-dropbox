@@ -43,17 +43,20 @@ type GPSCoordinates struct {
 
 // PhotoMetadata specifies metadata for a photo.
 type PhotoMetadata struct {
-	Dimensions *Dimensions     `json:"dimensions,omitempty"`
-	Location   *GPSCoordinates `json:"location,omitempty"`
-	TimeTaken  time.Time       `json:"time_taken,omitempty"`
+	VisualMediaMetadata
 }
 
 // VideoMetadata specifies metadata for a video.
 type VideoMetadata struct {
+	VisualMediaMetadata
+	Duration uint64 `json:"duration,omitempty"`
+}
+
+// VisualMediaMetadata specifies metadata common to photo and video
+type VisualMediaMetadata struct {
 	Dimensions *Dimensions     `json:"dimensions,omitempty"`
 	Location   *GPSCoordinates `json:"location,omitempty"`
 	TimeTaken  time.Time       `json:"time_taken,omitempty"`
-	Duration   uint64          `json:"duration,omitempty"`
 }
 
 // MediaMetadata provides metadata for a photo or video.
