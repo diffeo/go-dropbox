@@ -58,6 +58,19 @@ func TestFiles_GetMetadata(t *testing.T) {
 	assert.Equal(t, "file", out.Tag)
 }
 
+func TestFiles_GetMetadataWithMediaInfo(t *testing.T) {
+	c := client()
+
+	out, err := c.Files.GetMetadata(&GetMetadataInput{
+		Path:             "/IMG_0001.jpg",
+		IncludeMediaInfo: true,
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, "file", out.Tag)
+	assert.Equal(t, "photo", out.MediaInfo.Metadata.Tag)
+	assert.NotNil(t, out.MediaInfo.Metadata.Dimensions)
+}
+
 func TestFiles_ListFolder(t *testing.T) {
 	t.Parallel()
 	c := client()
