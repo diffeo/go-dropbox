@@ -42,6 +42,13 @@ func (c *Client) call(path string, in interface{}) (io.ReadCloser, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
+	if c.Namespace != nil {
+		namespaceHeader, err := json.Marshal(c.Namespace)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("Dropbox-API-Path-Root", string(namespaceHeader))
+	}
 
 	r, _, err := c.do(req)
 	return r, err
@@ -62,6 +69,13 @@ func (c *Client) download(path string, in interface{}, r io.Reader) (io.ReadClos
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Dropbox-API-Arg", string(body))
+	if c.Namespace != nil {
+		namespaceHeader, err := json.Marshal(c.Namespace)
+		if err != nil {
+			return nil, 0, err
+		}
+		req.Header.Set("Dropbox-API-Path-Root", string(namespaceHeader))
+	}
 
 	if r != nil {
 		req.Header.Set("Content-Type", "application/octet-stream")
