@@ -70,6 +70,29 @@ func (c *Users) GetAccountBatch(in *GetAccountBatchInput) (out GetAccountBatchOu
 	return
 }
 
+// FullTeam represents a Dropbox team.
+type FullTeam struct {
+	ID                string              `json:"id"`
+	Name              string              `json:"name"`
+	SharingPolicies   TeamSharingPolicies `json:"sharing_policies"`
+	OfficeAddinPolicy struct {
+		Tag string `json:"tag"`
+	} `json:"office_addin_policy"`
+}
+
+// TeamSharingPolicies represents the sharing policies for a Dropbox team.
+type TeamSharingPolicies struct {
+	SharedFolderMemberPolicy struct {
+		Tag string `json:"tag"`
+	} `json:"shared_folder_member_policy"`
+	SharedFolderJoinPolicy struct {
+		Tag string `json:"tag"`
+	} `json:"shared_folder_join_policy"`
+	SharedLinkCreatePolicy struct {
+		Tag string `json:"tag"`
+	} `json:"shared_link_create_policy"`
+}
+
 // GetCurrentAccountOutput request output.
 type GetCurrentAccountOutput struct {
 	AccountID string `json:"account_id"`
@@ -79,14 +102,23 @@ type GetCurrentAccountOutput struct {
 		FamiliarName string `json:"familiar_name"`
 		DisplayName  string `json:"display_name"`
 	} `json:"name"`
-	Email        string `json:"email"`
-	Locale       string `json:"locale"`
-	ReferralLink string `json:"referral_link"`
-	IsPaired     bool   `json:"is_paired"`
-	AccountType  struct {
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+	Disabled      bool   `json:"disabled"`
+	Country       string `json:"country"`
+	Locale        string `json:"locale"`
+	ReferralLink  string `json:"referral_link"`
+	TeamMemberID  string `json:"team_member_id"`
+	IsPaired      bool   `json:"is_paired"`
+	AccountType   struct {
 		Tag string `json:".tag"`
 	} `json:"account_type"`
-	Country string `json:"country"`
+	RootInfo struct {
+		Tag             string `json:".tag"`
+		RootNamespaceID string `json:"root_namespace_id"`
+		HomeNamespaceID string `json:"home_namespace_id"`
+		HomePath        string `json:"home_path"`
+	} `json:"root_info"`
 }
 
 // GetCurrentAccount returns information about the current user's account.
