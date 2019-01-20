@@ -16,7 +16,7 @@ func TestFiles_Upload(t *testing.T) {
 	assert.NoError(t, err, "error opening file")
 	defer file.Close()
 
-	out, err := c.Files.Upload(&UploadInput{
+	out, err := c.Files.Upload(ctx, &UploadInput{
 		Mute:   true,
 		Mode:   WriteModeOverwrite,
 		Path:   "/Readme.md",
@@ -30,7 +30,7 @@ func TestFiles_Upload(t *testing.T) {
 func TestFiles_Download(t *testing.T) {
 	c := client()
 
-	out, err := c.Files.Download(&DownloadInput{"/Readme.md"})
+	out, err := c.Files.Download(ctx, &DownloadInput{"/Readme.md"})
 
 	assert.NoError(t, err, "error downloading")
 	defer out.Body.Close()
@@ -51,7 +51,7 @@ func TestFiles_Download(t *testing.T) {
 func TestFiles_GetMetadata(t *testing.T) {
 	c := client()
 
-	out, err := c.Files.GetMetadata(&GetMetadataInput{
+	out, err := c.Files.GetMetadata(ctx, &GetMetadataInput{
 		Path: "/Readme.md",
 	})
 	assert.NoError(t, err)
@@ -61,7 +61,7 @@ func TestFiles_GetMetadata(t *testing.T) {
 func TestFiles_GetMetadataWithMediaInfo(t *testing.T) {
 	c := client()
 
-	out, err := c.Files.GetMetadata(&GetMetadataInput{
+	out, err := c.Files.GetMetadata(ctx, &GetMetadataInput{
 		Path:             "/IMG_0001.jpg",
 		IncludeMediaInfo: true,
 	})
@@ -75,7 +75,7 @@ func TestFiles_ListFolder(t *testing.T) {
 	t.Parallel()
 	c := client()
 
-	out, err := c.Files.ListFolder(&ListFolderInput{
+	out, err := c.Files.ListFolder(ctx, &ListFolderInput{
 		Path: "/list",
 	})
 
@@ -88,7 +88,7 @@ func TestFiles_ListFolder_root(t *testing.T) {
 	t.Parallel()
 	c := client()
 
-	_, err := c.Files.ListFolder(&ListFolderInput{
+	_, err := c.Files.ListFolder(ctx, &ListFolderInput{
 		Path: "/",
 	})
 
@@ -98,7 +98,7 @@ func TestFiles_ListFolder_root(t *testing.T) {
 func TestFiles_Search(t *testing.T) {
 	c := client()
 
-	out, err := c.Files.Search(&SearchInput{
+	out, err := c.Files.Search(ctx, &SearchInput{
 		Path:  "/",
 		Query: "hello",
 	})
@@ -110,7 +110,7 @@ func TestFiles_Search(t *testing.T) {
 func TestFiles_Delete(t *testing.T) {
 	c := client()
 
-	out, err := c.Files.Delete(&DeleteInput{
+	out, err := c.Files.Delete(ctx, &DeleteInput{
 		Path: "/Readme.md",
 	})
 
@@ -144,7 +144,7 @@ func TestFiles_GetThumbnail(t *testing.T) {
 	// REVIEW(bg): This feels a bit sloppy...
 	{
 		buf := bytes.NewBuffer(grayPng)
-		_, err := c.Files.Upload(&UploadInput{
+		_, err := c.Files.Upload(ctx, &UploadInput{
 			Mute:   true,
 			Mode:   WriteModeOverwrite,
 			Path:   "/gray.png",
@@ -152,7 +152,7 @@ func TestFiles_GetThumbnail(t *testing.T) {
 		})
 		assert.NoError(t, err, "error uploading file")
 	}
-	out, err := c.Files.GetThumbnail(&GetThumbnailInput{"/gray.png", GetThumbnailFormatJPEG, GetThumbnailSizeW32H32})
+	out, err := c.Files.GetThumbnail(ctx, &GetThumbnailInput{"/gray.png", GetThumbnailFormatJPEG, GetThumbnailSizeW32H32})
 	assert.NoError(t, err)
 	if err != nil {
 		return
@@ -173,7 +173,7 @@ func TestFiles_GetThumbnail(t *testing.T) {
 func TestFiles_GetPreview(t *testing.T) {
 	c := client()
 
-	out, err := c.Files.GetPreview(&GetPreviewInput{"/sample.ppt"})
+	out, err := c.Files.GetPreview(ctx, &GetPreviewInput{"/sample.ppt"})
 	defer out.Body.Close()
 
 	assert.NoError(t, err)
@@ -189,7 +189,7 @@ func TestFiles_GetPreview(t *testing.T) {
 func TestFiles_ListRevisions(t *testing.T) {
 	c := client()
 
-	out, err := c.Files.ListRevisions(&ListRevisionsInput{Path: "/sample.ppt"})
+	out, err := c.Files.ListRevisions(ctx, &ListRevisionsInput{Path: "/sample.ppt"})
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, out.Entries)

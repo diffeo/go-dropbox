@@ -8,7 +8,7 @@ import (
 
 func TestError(t *testing.T) {
 	c := client()
-	out, err := c.Files.GetMetadata(&GetMetadataInput{
+	out, err := c.Files.GetMetadata(ctx, &GetMetadataInput{
 		Path: "/this/does/not/exist.txt",
 	})
 

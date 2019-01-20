@@ -2,6 +2,7 @@ package dropbox
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -28,7 +29,11 @@ func New(config *Config) *Client {
 }
 
 // call rpc style endpoint.
-func (c *Client) call(path string, in interface{}) (io.ReadCloser, error) {
+func (c *Client) call(
+	ctx context.Context,
+	path string,
+	in interface{},
+) (io.ReadCloser, error) {
 	url := "https://api.dropboxapi.com/2" + path
 
 	body, err := json.Marshal(in)
@@ -40,6 +45,7 @@ func (c *Client) call(path string, in interface{}) (io.ReadCloser, error) {
 	if err != nil {
 		return nil, err
 	}
+	req = req.WithContext(ctx)
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 	if c.Namespace != nil {
@@ -55,7 +61,12 @@ func (c *Client) call(path string, in interface{}) (io.ReadCloser, error) {
 }
 
 // download style endpoint.
-func (c *Client) download(path string, in interface{}, r io.Reader) (io.ReadCloser, int64, error) {
+func (c *Client) download(
+	ctx context.Context,
+	path string,
+	in interface{},
+	r io.Reader,
+) (io.ReadCloser, int64, error) {
 	url := "https://content.dropboxapi.com/2" + path
 
 	body, err := json.Marshal(in)
@@ -67,6 +78,7 @@ func (c *Client) download(path string, in interface{}, r io.Reader) (io.ReadClos
 	if err != nil {
 		return nil, 0, err
 	}
+	req = req.WithContext(ctx)
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Dropbox-API-Arg", string(body))
 	if c.Namespace != nil {

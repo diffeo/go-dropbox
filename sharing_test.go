@@ -8,7 +8,7 @@ import (
 
 func TestSharing_CreateSharedLink(t *testing.T) {
 	c := client()
-	out, err := c.Sharing.CreateSharedLink(&CreateSharedLinkInput{
+	out, err := c.Sharing.CreateSharedLink(ctx, &CreateSharedLinkInput{
 		Path:     "/hello.txt",
 		ShortURL: true,
 	})
@@ -19,7 +19,7 @@ func TestSharing_CreateSharedLink(t *testing.T) {
 
 func TestSharing_ListSharedFolder(t *testing.T) {
 	c := client()
-	out, err := c.Sharing.ListSharedFolders(&ListSharedFolderInput{
+	out, err := c.Sharing.ListSharedFolders(ctx, &ListSharedFolderInput{
 		Limit: 1,
 	})
 
@@ -29,7 +29,7 @@ func TestSharing_ListSharedFolder(t *testing.T) {
 	assert.NotEmpty(t, out.Entries, "output should be non-empty")
 
 	for out.Cursor != "" {
-		out, err = c.Sharing.ListSharedFoldersContinue(&ListSharedFolderContinueInput{
+		out, err = c.Sharing.ListSharedFoldersContinue(ctx, &ListSharedFolderContinueInput{
 			Cursor: out.Cursor,
 		})
 
@@ -40,7 +40,7 @@ func TestSharing_ListSharedFolder(t *testing.T) {
 	}
 
 	for _, sharedFolder := range shared {
-		out, err := c.Sharing.ListSharedFolderMembers(&ListSharedFolderMembersInput{
+		out, err := c.Sharing.ListSharedFolderMembers(ctx, &ListSharedFolderMembersInput{
 			SharedFolderID: sharedFolder.SharedFolderID,
 			Limit:          1,
 		})
@@ -49,7 +49,7 @@ func TestSharing_ListSharedFolder(t *testing.T) {
 		assert.Equal(t, 1, len(out.Users)+len(out.Groups)+len(out.Invitees), "there should be 1 item present")
 
 		for out.Cursor != "" {
-			out, err = c.Sharing.ListSharedFolderMembersContinue(&ListSharedMembersContinueInput{
+			out, err = c.Sharing.ListSharedFolderMembersContinue(ctx, &ListSharedMembersContinueInput{
 				Cursor: out.Cursor,
 			})
 
@@ -61,7 +61,7 @@ func TestSharing_ListSharedFolder(t *testing.T) {
 
 func TestSharing_ListSharedFile(t *testing.T) {
 	c := client()
-	out, err := c.Sharing.ListSharedFileMembers(&ListSharedFileMembersInput{
+	out, err := c.Sharing.ListSharedFileMembers(ctx, &ListSharedFileMembersInput{
 		File:             "/hello.txt",
 		IncludeInherited: true,
 		Limit:            1,
@@ -71,7 +71,7 @@ func TestSharing_ListSharedFile(t *testing.T) {
 	assert.NotEmpty(t, out.Users, "output should be non-empty")
 	assert.NotEmpty(t, out.Cursor, "cursor should be non-empty for complete test")
 
-	out, err = c.Sharing.ListSharedFileMembersContinue(&ListSharedMembersContinueInput{
+	out, err = c.Sharing.ListSharedFileMembersContinue(ctx, &ListSharedMembersContinueInput{
 		Cursor: out.Cursor,
 	})
 
