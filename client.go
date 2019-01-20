@@ -117,7 +117,7 @@ func (c *Client) do(req *http.Request) (io.ReadCloser, int64, error) {
 
 	kind := res.Header.Get("Content-Type")
 
-	if strings.Contains(kind, "text/plain") {
+	if !strings.Contains(kind, "json") {
 		if b, err := ioutil.ReadAll(res.Body); err == nil {
 			e.Summary = string(b)
 			return nil, 0, e
