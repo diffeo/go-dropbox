@@ -1,6 +1,7 @@
 package dropbox
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"time"
@@ -101,8 +102,8 @@ type GetMetadataOutput struct {
 }
 
 // GetMetadata returns the metadata for a file or folder.
-func (c *Files) GetMetadata(in *GetMetadataInput) (out *GetMetadataOutput, err error) {
-	body, err := c.call("/files/get_metadata", in)
+func (c *Files) GetMetadata(ctx context.Context, in *GetMetadataInput) (out *GetMetadataOutput, err error) {
+	body, err := c.call(ctx, "/files/get_metadata", in)
 	if err != nil {
 		return
 	}
@@ -125,8 +126,8 @@ type CreateFolderOutput struct {
 }
 
 // CreateFolder creates a folder.
-func (c *Files) CreateFolder(in *CreateFolderInput) (out *CreateFolderOutput, err error) {
-	body, err := c.call("/files/create_folder", in)
+func (c *Files) CreateFolder(ctx context.Context, in *CreateFolderInput) (out *CreateFolderOutput, err error) {
+	body, err := c.call(ctx, "/files/create_folder", in)
 	if err != nil {
 		return
 	}
@@ -147,8 +148,8 @@ type DeleteOutput struct {
 }
 
 // Delete a file or folder and its contents.
-func (c *Files) Delete(in *DeleteInput) (out *DeleteOutput, err error) {
-	body, err := c.call("/files/delete", in)
+func (c *Files) Delete(ctx context.Context, in *DeleteInput) (out *DeleteOutput, err error) {
+	body, err := c.call(ctx, "/files/delete", in)
 	if err != nil {
 		return
 	}
@@ -164,8 +165,8 @@ type PermanentlyDeleteInput struct {
 }
 
 // PermanentlyDelete a file or folder and its contents.
-func (c *Files) PermanentlyDelete(in *PermanentlyDeleteInput) (err error) {
-	body, err := c.call("/files/delete", in)
+func (c *Files) PermanentlyDelete(ctx context.Context, in *PermanentlyDeleteInput) (err error) {
+	body, err := c.call(ctx, "/files/delete", in)
 	if err != nil {
 		return
 	}
@@ -186,8 +187,8 @@ type CopyOutput struct {
 }
 
 // Copy a file or folder to a different location.
-func (c *Files) Copy(in *CopyInput) (out *CopyOutput, err error) {
-	body, err := c.call("/files/copy", in)
+func (c *Files) Copy(ctx context.Context, in *CopyInput) (out *CopyOutput, err error) {
+	body, err := c.call(ctx, "/files/copy", in)
 	if err != nil {
 		return
 	}
@@ -209,8 +210,8 @@ type MoveOutput struct {
 }
 
 // Move a file or folder to a different location.
-func (c *Files) Move(in *MoveInput) (out *MoveOutput, err error) {
-	body, err := c.call("/files/move", in)
+func (c *Files) Move(ctx context.Context, in *MoveInput) (out *MoveOutput, err error) {
+	body, err := c.call(ctx, "/files/move", in)
 	if err != nil {
 		return
 	}
@@ -232,8 +233,8 @@ type RestoreOutput struct {
 }
 
 // Restore a file to a specific revision.
-func (c *Files) Restore(in *RestoreInput) (out *RestoreOutput, err error) {
-	body, err := c.call("/files/restore", in)
+func (c *Files) Restore(ctx context.Context, in *RestoreInput) (out *RestoreOutput, err error) {
+	body, err := c.call(ctx, "/files/restore", in)
 	if err != nil {
 		return
 	}
@@ -259,10 +260,10 @@ type ListFolderOutput struct {
 }
 
 // ListFolder returns the metadata for a file or folder.
-func (c *Files) ListFolder(in *ListFolderInput) (out *ListFolderOutput, err error) {
+func (c *Files) ListFolder(ctx context.Context, in *ListFolderInput) (out *ListFolderOutput, err error) {
 	in.Path = normalizePath(in.Path)
 
-	body, err := c.call("/files/list_folder", in)
+	body, err := c.call(ctx, "/files/list_folder", in)
 	if err != nil {
 		return
 	}
@@ -278,8 +279,8 @@ type ListFolderContinueInput struct {
 }
 
 // ListFolderContinue pagenates using the cursor from ListFolder.
-func (c *Files) ListFolderContinue(in *ListFolderContinueInput) (out *ListFolderOutput, err error) {
-	body, err := c.call("/files/list_folder/continue", in)
+func (c *Files) ListFolderContinue(ctx context.Context, in *ListFolderContinueInput) (out *ListFolderOutput, err error) {
+	body, err := c.call(ctx, "/files/list_folder/continue", in)
 	if err != nil {
 		return
 	}
@@ -334,14 +335,14 @@ type SearchOutput struct {
 }
 
 // Search for files and folders.
-func (c *Files) Search(in *SearchInput) (out *SearchOutput, err error) {
+func (c *Files) Search(ctx context.Context, in *SearchInput) (out *SearchOutput, err error) {
 	in.Path = normalizePath(in.Path)
 
 	if in.Mode == "" {
 		in.Mode = SearchModeFilename
 	}
 
-	body, err := c.call("/files/search", in)
+	body, err := c.call(ctx, "/files/search", in)
 	if err != nil {
 		return
 	}
@@ -367,8 +368,8 @@ type UploadOutput struct {
 }
 
 // Upload a file smaller than 150MB.
-func (c *Files) Upload(in *UploadInput) (out *UploadOutput, err error) {
-	body, _, err := c.download("/files/upload", in, in.Reader)
+func (c *Files) Upload(ctx context.Context, in *UploadInput) (out *UploadOutput, err error) {
+	body, _, err := c.download(ctx, "/files/upload", in, in.Reader)
 	if err != nil {
 		return
 	}
@@ -390,8 +391,8 @@ type DownloadOutput struct {
 }
 
 // Download a file.
-func (c *Files) Download(in *DownloadInput) (out *DownloadOutput, err error) {
-	body, l, err := c.download("/files/download", in, nil)
+func (c *Files) Download(ctx context.Context, in *DownloadInput) (out *DownloadOutput, err error) {
+	body, l, err := c.download(ctx, "/files/download", in, nil)
 	if err != nil {
 		return
 	}
@@ -410,7 +411,7 @@ const (
 	GetThumbnailFormatPNG = "png"
 )
 
-// ThumbnailFormat determines the size of the thumbnail.
+// ThumbnailSize determines the size of the thumbnail.
 type ThumbnailSize string
 
 const (
@@ -441,8 +442,8 @@ type GetThumbnailOutput struct {
 
 // GetThumbnail a thumbnail for a file. Currently thumbnails are only generated for the
 // files with the following extensions: png, jpeg, png, tiff, tif, gif and bmp.
-func (c *Files) GetThumbnail(in *GetThumbnailInput) (out *GetThumbnailOutput, err error) {
-	body, l, err := c.download("/files/get_thumbnail", in, nil)
+func (c *Files) GetThumbnail(ctx context.Context, in *GetThumbnailInput) (out *GetThumbnailOutput, err error) {
+	body, l, err := c.download(ctx, "/files/get_thumbnail", in, nil)
 	if err != nil {
 		return
 	}
@@ -465,8 +466,8 @@ type GetPreviewOutput struct {
 // GetPreview a preview for a file. Currently previews are only generated for the
 // files with the following extensions: .doc, .docx, .docm, .ppt, .pps, .ppsx,
 // .ppsm, .pptx, .pptm, .xls, .xlsx, .xlsm, .rtf
-func (c *Files) GetPreview(in *GetPreviewInput) (out *GetPreviewOutput, err error) {
-	body, l, err := c.download("/files/get_preview", in, nil)
+func (c *Files) GetPreview(ctx context.Context, in *GetPreviewInput) (out *GetPreviewOutput, err error) {
+	body, l, err := c.download(ctx, "/files/get_preview", in, nil)
 	if err != nil {
 		return
 	}
@@ -488,8 +489,8 @@ type ListRevisionsOutput struct {
 }
 
 // ListRevisions gets the revisions of the specified file.
-func (c *Files) ListRevisions(in *ListRevisionsInput) (out *ListRevisionsOutput, err error) {
-	body, err := c.call("/files/list_revisions", in)
+func (c *Files) ListRevisions(ctx context.Context, in *ListRevisionsInput) (out *ListRevisionsOutput, err error) {
+	body, err := c.call(ctx, "/files/list_revisions", in)
 	if err != nil {
 		return
 	}
@@ -503,7 +504,6 @@ func (c *Files) ListRevisions(in *ListRevisionsInput) (out *ListRevisionsOutput,
 func normalizePath(s string) string {
 	if s == "/" {
 		return ""
-	} else {
-		return s
 	}
+	return s
 }

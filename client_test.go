@@ -1,11 +1,14 @@
 package dropbox
 
 import (
+	"context"
 	"testing"
 
-	"github.com/segmentio/go-env"
+	env "github.com/segmentio/go-env"
 	"github.com/stretchr/testify/assert"
 )
+
+var ctx = context.Background()
 
 func client() *Client {
 	token := env.MustGet("DROPBOX_ACCESS_TOKEN")
@@ -15,7 +18,7 @@ func client() *Client {
 func TestClient_error_text(t *testing.T) {
 	c := client()
 
-	_, err := c.Files.Download(&DownloadInput{
+	_, err := c.Files.Download(ctx, &DownloadInput{
 		Path: "asdfasdfasdf",
 	})
 
@@ -30,7 +33,7 @@ func TestClient_error_text(t *testing.T) {
 func TestClient_error_json(t *testing.T) {
 	c := client()
 
-	_, err := c.Files.Download(&DownloadInput{"/nothing"})
+	_, err := c.Files.Download(ctx, &DownloadInput{"/nothing"})
 	assert.Error(t, err)
 
 	e := err.(*Error)

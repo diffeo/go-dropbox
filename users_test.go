@@ -8,18 +8,18 @@ import (
 
 func TestUsers_GetCurrentAccount(t *testing.T) {
 	c := client()
-	_, err := c.Users.GetCurrentAccount()
+	_, err := c.Users.GetCurrentAccount(ctx)
 	assert.NoError(t, err)
 }
 
 func TestUsers_GetAccountBatch(t *testing.T) {
 	c := client()
-	setup, err := c.Users.GetCurrentAccount()
+	setup, err := c.Users.GetCurrentAccount(ctx)
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, setup.AccountID, "account id required for test setup")
 
-	out, err := c.Users.GetAccountBatch(&GetAccountBatchInput{
+	out, err := c.Users.GetAccountBatch(ctx, &GetAccountBatchInput{
 		AccountIDs: []string{setup.AccountID},
 	})
 

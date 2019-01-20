@@ -1,6 +1,7 @@
 package dropbox
 
 import (
+	"context"
 	"encoding/json"
 )
 
@@ -39,8 +40,8 @@ type GetAccountOutput struct {
 }
 
 // GetAccount returns information about a user's account.
-func (c *Users) GetAccount(in *GetAccountInput) (out *GetAccountOutput, err error) {
-	body, err := c.call("/users/get_account", in)
+func (c *Users) GetAccount(ctx context.Context, in *GetAccountInput) (out *GetAccountOutput, err error) {
+	body, err := c.call(ctx, "/users/get_account", in)
 	if err != nil {
 		return
 	}
@@ -59,8 +60,8 @@ type GetAccountBatchInput struct {
 type GetAccountBatchOutput []*GetAccountOutput
 
 // GetAccountBatch returns a list of information about users' accounts.
-func (c *Users) GetAccountBatch(in *GetAccountBatchInput) (out GetAccountBatchOutput, err error) {
-	body, err := c.call("/users/get_account_batch", in)
+func (c *Users) GetAccountBatch(ctx context.Context, in *GetAccountBatchInput) (out GetAccountBatchOutput, err error) {
+	body, err := c.call(ctx, "/users/get_account_batch", in)
 	if err != nil {
 		return
 	}
@@ -122,8 +123,8 @@ type GetCurrentAccountOutput struct {
 }
 
 // GetCurrentAccount returns information about the current user's account.
-func (c *Users) GetCurrentAccount() (out *GetCurrentAccountOutput, err error) {
-	body, err := c.call("/users/get_current_account", nil)
+func (c *Users) GetCurrentAccount(ctx context.Context) (out *GetCurrentAccountOutput, err error) {
+	body, err := c.call(ctx, "/users/get_current_account", nil)
 	if err != nil {
 		return
 	}
@@ -143,8 +144,8 @@ type GetSpaceUsageOutput struct {
 }
 
 // GetSpaceUsage returns space usage information for the current user's account.
-func (c *Users) GetSpaceUsage() (out *GetSpaceUsageOutput, err error) {
-	body, err := c.call("/users/get_space_usage", nil)
+func (c *Users) GetSpaceUsage(ctx context.Context) (out *GetSpaceUsageOutput, err error) {
+	body, err := c.call(ctx, "/users/get_space_usage", nil)
 	if err != nil {
 		return
 	}

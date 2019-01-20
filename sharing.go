@@ -1,6 +1,7 @@
 package dropbox
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 )
@@ -48,8 +49,8 @@ const (
 )
 
 // CreateSharedLink returns a shared link.
-func (c *Sharing) CreateSharedLink(in *CreateSharedLinkInput) (out *CreateSharedLinkOutput, err error) {
-	body, err := c.call("/sharing/create_shared_link", in)
+func (c *Sharing) CreateSharedLink(ctx context.Context, in *CreateSharedLinkInput) (out *CreateSharedLinkOutput, err error) {
+	body, err := c.call(ctx, "/sharing/create_shared_link", in)
 	if err != nil {
 		return
 	}
@@ -186,8 +187,8 @@ type InviteeInfo struct {
 }
 
 // ListSharedFileMembers returns shared file membership by its file ID.
-func (c *Sharing) ListSharedFileMembers(in *ListSharedFileMembersInput) (out *ListSharedMembersOutput, err error) {
-	body, err := c.call("/sharing/list_file_members", in)
+func (c *Sharing) ListSharedFileMembers(ctx context.Context, in *ListSharedFileMembersInput) (out *ListSharedMembersOutput, err error) {
+	body, err := c.call(ctx, "/sharing/list_file_members", in)
 	if err != nil {
 		return
 	}
@@ -198,8 +199,8 @@ func (c *Sharing) ListSharedFileMembers(in *ListSharedFileMembersInput) (out *Li
 }
 
 // ListSharedFileMembersContinue returns shared file membership by its file ID.
-func (c *Sharing) ListSharedFileMembersContinue(in *ListSharedMembersContinueInput) (out *ListSharedMembersOutput, err error) {
-	body, err := c.call("/sharing/list_file_members/continue", in)
+func (c *Sharing) ListSharedFileMembersContinue(ctx context.Context, in *ListSharedMembersContinueInput) (out *ListSharedMembersOutput, err error) {
+	body, err := c.call(ctx, "/sharing/list_file_members/continue", in)
 	if err != nil {
 		return
 	}
@@ -210,8 +211,8 @@ func (c *Sharing) ListSharedFileMembersContinue(in *ListSharedMembersContinueInp
 }
 
 // ListSharedFolderMembers returns shared folder membership by its folder ID.
-func (c *Sharing) ListSharedFolderMembers(in *ListSharedFolderMembersInput) (out *ListSharedMembersOutput, err error) {
-	body, err := c.call("/sharing/list_folder_members", in)
+func (c *Sharing) ListSharedFolderMembers(ctx context.Context, in *ListSharedFolderMembersInput) (out *ListSharedMembersOutput, err error) {
+	body, err := c.call(ctx, "/sharing/list_folder_members", in)
 	if err != nil {
 		return
 	}
@@ -222,8 +223,8 @@ func (c *Sharing) ListSharedFolderMembers(in *ListSharedFolderMembersInput) (out
 }
 
 // ListSharedFolderMembersContinue returns shared folder membership by its folder ID.
-func (c *Sharing) ListSharedFolderMembersContinue(in *ListSharedMembersContinueInput) (out *ListSharedMembersOutput, err error) {
-	body, err := c.call("/sharing/list_folder_members/continue", in)
+func (c *Sharing) ListSharedFolderMembersContinue(ctx context.Context, in *ListSharedMembersContinueInput) (out *ListSharedMembersOutput, err error) {
+	body, err := c.call(ctx, "/sharing/list_folder_members/continue", in)
 	if err != nil {
 		return
 	}
@@ -251,8 +252,8 @@ type ListSharedFolderOutput struct {
 }
 
 // ListSharedFolders returns the list of all shared folders the current user has access to.
-func (c *Sharing) ListSharedFolders(in *ListSharedFolderInput) (out *ListSharedFolderOutput, err error) {
-	body, err := c.call("/sharing/list_folders", in)
+func (c *Sharing) ListSharedFolders(ctx context.Context, in *ListSharedFolderInput) (out *ListSharedFolderOutput, err error) {
+	body, err := c.call(ctx, "/sharing/list_folders", in)
 	if err != nil {
 		return
 	}
@@ -268,8 +269,8 @@ type ListSharedFolderContinueInput struct {
 }
 
 // ListSharedFoldersContinue returns the list of all shared folders the current user has access to.
-func (c *Sharing) ListSharedFoldersContinue(in *ListSharedFolderContinueInput) (out *ListSharedFolderOutput, err error) {
-	body, err := c.call("/sharing/list_folders/continue", in)
+func (c *Sharing) ListSharedFoldersContinue(ctx context.Context, in *ListSharedFolderContinueInput) (out *ListSharedFolderOutput, err error) {
+	body, err := c.call(ctx, "/sharing/list_folders/continue", in)
 	if err != nil {
 		return
 	}
