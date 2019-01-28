@@ -3,6 +3,7 @@ package dropbox
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"time"
 )
 
@@ -168,6 +169,51 @@ func (c *Paper) GetFolderInfo(ctx context.Context, in *PaperGetFolderInfoInput) 
 	defer body.Close()
 
 	err = json.NewDecoder(body).Decode(&out)
+	return
+}
+
+// PaperCreateInput is the Dropbox-API-Arg JSON format for providing options on
+// the format, and the parent folder ID if passed in, of the Dropbox Paper
+// being created.
+type PaperCreateInput struct {
+	ImportFormat   string    `json:"import_format"`
+	ParentFolderID string    `json:"parent_folder_id,omitempty"`
+	Reader         io.Reader `json:"-"`
+}
+
+// PaperCreateOutput is the returned response format for a successful request
+// to the /paper/create endpoint.
+type PaperCreateOutput struct {
+	DocID    string `json:"doc_id"`
+	Revision int64  `json:"revision"`
+	Title    string `json:"title"`
+}
+
+// Create creates a Dropbox Paper file on a user's Dropbox Paper.
+func (c *Paper) Create(ctx context.Context, in *PaperCreateInput) (out *PaperCreateOutput, err error) {
+	body, _, err := c.download(ctx, "api", "/paper/docs/create", in, in.Reader)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+
+	err = json.NewDecoder(body).Decode(&out)
+	return
+}
+
+// PaperPermanentlyDeleteInput request input.
+type PaperPermanentlyDeleteInput struct {
+	DocID string `json:"doc_id"`
+}
+
+// PermanentlyDelete a file or folder and its contents.
+func (c *Paper) PermanentlyDelete(ctx context.Context, in *PaperPermanentlyDeleteInput) (err error) {
+	body, err := c.call(ctx, "/paper/docs/permanently_delete", in)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+
 	return
 }
 
