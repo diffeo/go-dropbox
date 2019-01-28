@@ -51,10 +51,10 @@ const (
 
 // PaperDocsListInput is the payload for /paper/docs/list requests.
 type PaperDocsListInput struct {
-	FilterBy  string `json:"filter_by"`
-	SortBy    string `json:"sort_by"`
-	SortOrder string `json:"sort_order"`
-	Limit     int    `json:"limit"`
+	FilterBy  string `json:"filter_by,omitempty"`
+	SortBy    string `json:"sort_by,omitempty"`
+	SortOrder string `json:"sort_order,omitempty"`
+	Limit     int    `json:"limit,omitempty"`
 }
 
 // PaperDocsListCursor is a cursor to use in /paper/docs/list/continue calls
@@ -120,7 +120,7 @@ type PaperDownloadInput struct {
 
 // Download a Dropbox Paper.
 func (c *Paper) Download(ctx context.Context, in *PaperDownloadInput) (out *DownloadOutput, err error) {
-	body, l, err := c.download(ctx, "/paper/docs/download", in, nil)
+	body, l, err := c.download(ctx, "api", "/paper/docs/download", in, nil)
 	if err != nil {
 		return
 	}
@@ -140,8 +140,8 @@ type PaperGetFolderInfoInput struct {
 // /paper/docs/get_folder_info requests, containing information on which
 // folders the requested Dropbox Paper is a part of.
 type PaperGetFolderInfoOutput struct {
-	FolderSharingPolicyType PaperFolderSharingPolicyType `json:"folder_sharing_policy_type"`
-	Folders                 []PaperFolder                `json:"folder"`
+	FolderSharingPolicyType PaperFolderSharingPolicyType `json:"folder_sharing_policy_type,omitempty"`
+	Folders                 []PaperFolder                `json:"folders,omitempty"`
 }
 
 // PaperFolderSharingPolicyType is the folder sharing policy for the folder
@@ -200,7 +200,7 @@ type PaperDocStatus struct {
 // AlphaGetMetadata returns metadata for the requested file. Note that this
 // is an currently an alpha endpoint, and may disappear.
 func (c *Paper) AlphaGetMetadata(ctx context.Context, in *PaperGetMetadataInput) (out *PaperGetMetadataOutput, err error) {
-	body, err := c.call(ctx, "/paper/get_metadata", in)
+	body, err := c.call(ctx, "/paper/docs/get_metadata", in)
 	if err != nil {
 		return
 	}
