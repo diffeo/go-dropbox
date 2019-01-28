@@ -170,3 +170,42 @@ func (c *Paper) GetFolderInfo(ctx context.Context, in *PaperGetFolderInfoInput) 
 	err = json.NewDecoder(body).Decode(&out)
 	return
 }
+
+// PaperGetMetadataInput is the request payload format for the alpha
+// /paper/docs/get_metadata requests, indicating the ID of the Dropbox Paper
+// document that the caller wants to get metadata for.
+type PaperGetMetadataInput struct {
+	DocID string `json:"doc_id"`
+}
+
+// PaperGetMetadataOutput is the response format for the alpha
+// /paper/docs/get_metadata endpoint, containing metadata on a Dropbox Paper.
+type PaperGetMetadataOutput struct {
+	DocID           string         `json:"doc_id"`
+	Owner           string         `json:"owner"`
+	Title           string         `json:"title"`
+	CreatedDate     time.Time      `json:"created_date"`
+	Status          PaperDocStatus `json:"status"`
+	Revision        int64          `json:"revision"`
+	LastUpdatedDate time.Time      `json:"last_updated_date"`
+	LastEditor      string         `json:"last_editor"`
+}
+
+// PaperDocStatus contains information about whether a Dropbox Paper is active
+// or deleted.
+type PaperDocStatus struct {
+	Tag string `json:".tag"`
+}
+
+// AlphaGetMetadata returns metadata for the requested file. Note that this
+// is an currently an alpha endpoint, and may disappear.
+func (c *Paper) AlphaGetMetadata(ctx context.Context, in *PaperGetMetadataInput) (out *PaperGetMetadataOutput, err error) {
+	body, err := c.call(ctx, "/paper/get_metadata", in)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+
+	err = json.NewDecoder(body).Decode(&out)
+	return
+}
