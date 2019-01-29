@@ -369,7 +369,7 @@ type UploadOutput struct {
 
 // Upload a file smaller than 150MB.
 func (c *Files) Upload(ctx context.Context, in *UploadInput) (out *UploadOutput, err error) {
-	body, _, err := c.download(ctx, "/files/upload", in, in.Reader)
+	body, _, err := c.download(ctx, "content", "/files/upload", in, in.Reader)
 	if err != nil {
 		return
 	}
@@ -392,7 +392,7 @@ type DownloadOutput struct {
 
 // Download a file.
 func (c *Files) Download(ctx context.Context, in *DownloadInput) (out *DownloadOutput, err error) {
-	body, l, err := c.download(ctx, "/files/download", in, nil)
+	body, l, err := c.download(ctx, "content", "/files/download", in, nil)
 	if err != nil {
 		return
 	}
@@ -443,7 +443,7 @@ type GetThumbnailOutput struct {
 // GetThumbnail a thumbnail for a file. Currently thumbnails are only generated for the
 // files with the following extensions: png, jpeg, png, tiff, tif, gif and bmp.
 func (c *Files) GetThumbnail(ctx context.Context, in *GetThumbnailInput) (out *GetThumbnailOutput, err error) {
-	body, l, err := c.download(ctx, "/files/get_thumbnail", in, nil)
+	body, l, err := c.download(ctx, "content", "/files/get_thumbnail", in, nil)
 	if err != nil {
 		return
 	}
@@ -467,7 +467,7 @@ type GetPreviewOutput struct {
 // files with the following extensions: .doc, .docx, .docm, .ppt, .pps, .ppsx,
 // .ppsm, .pptx, .pptm, .xls, .xlsx, .xlsm, .rtf
 func (c *Files) GetPreview(ctx context.Context, in *GetPreviewInput) (out *GetPreviewOutput, err error) {
-	body, l, err := c.download(ctx, "/files/get_preview", in, nil)
+	body, l, err := c.download(ctx, "content", "/files/get_preview", in, nil)
 	if err != nil {
 		return
 	}

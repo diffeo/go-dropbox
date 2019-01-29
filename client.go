@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -17,6 +18,7 @@ type Client struct {
 	Users   *Users
 	Files   *Files
 	Sharing *Sharing
+	Paper   *Paper
 }
 
 // New client.
@@ -25,6 +27,7 @@ func New(config *Config) *Client {
 	c.Users = &Users{c}
 	c.Files = &Files{c}
 	c.Sharing = &Sharing{c}
+	c.Paper = &Paper{c}
 	return c
 }
 
@@ -63,11 +66,12 @@ func (c *Client) call(
 // download style endpoint.
 func (c *Client) download(
 	ctx context.Context,
+	subdomain string,
 	path string,
 	in interface{},
 	r io.Reader,
 ) (io.ReadCloser, int64, error) {
-	url := "https://content.dropboxapi.com/2" + path
+	url := fmt.Sprintf("https://%s.dropboxapi.com/2/%s", subdomain, path)
 
 	body, err := json.Marshal(in)
 	if err != nil {
